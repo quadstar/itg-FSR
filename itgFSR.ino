@@ -2,23 +2,6 @@
 #include <DirectIO.h>
 #include <ports.h>
 
- /******************************************************************************
-Force_Sensitive_Resistor_Example.ino
-Example sketch for SparkFun's force sensitive resistors
-  (https://www.sparkfun.com/products/9375)
-Jim Lindblom @ SparkFun Electronics
-April 28, 2016
-
-Create a voltage divider circuit combining an FSR with a 3.3k resistor.
-- The resistor should connect from A0 to GND.
-- The FSR should connect from A0 to 3.3V
-As the resistance of the FSR decreases (meaning an increase in pressure), the
-voltage at A0 should increase.
-
-Development environment specifics:
-Arduino 1.6.7
-******************************************************************************/
-
 // defines for setting and clearing register bits
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -29,8 +12,6 @@ Arduino 1.6.7
 
 // set prescale to 16
 
-// Measure the voltage at 5V and resistance of your 3.3k resistor, and enter
-// their value's below:
 const float VCC = 3.3; // Measured voltage of Ardunio 3,3V line
 const float R_DIV = 3300.00; // Measured resistance of 3.3k resistor
 
@@ -48,10 +29,6 @@ int serialLength = 0;
 
 bool debug = false;
 
-//Input<54> up_left;
-//Input<55> up_right;
-//Input<56> left;
-//
 Output<62> up;
 Output<63> right;
 Output<64> down;
@@ -81,14 +58,6 @@ void setup()
   right = HIGH;
   down = HIGH;
   left = HIGH;
-//  pinMode(A8, OUTPUT);
-//  digitalWrite(A8, HIGH);
-//  pinMode(A9, OUTPUT);
-//  digitalWrite(A9, HIGH);
-//  pinMode(A10, OUTPUT);
-//  digitalWrite(A10, HIGH);
-//  pinMode(A11, OUTPUT);
-//  digitalWrite(A11, HIGH);
 }
 
 void loop() 
@@ -166,11 +135,8 @@ void loop()
       left = LOW;
     } else {
       left = HIGH;
-    }
-    
+    } 
   }
-  
-  
 }
 
 void printSens() {
@@ -189,50 +155,13 @@ void printSens() {
 
 float readPressure(int pin) {
   int fsrADC = analogRead(pin);
-  // If the FSR has no pressure, the resistance will be
-  // near infinite. So the voltage should be near 0.
-  if (fsrADC != 0) // If the analog reading is non-zero
+  if (fsrADC != 0)
   {
-    // Use ADC reading to calculate voltage:
     float fsrV = fsrADC * VCC / 1023.0;
-    // Use voltage and static resistor value to 
-    // calculate FSR resistance:
     float fsrR = R_DIV * (VCC / fsrV - 1.0);
-    // Guesstimate force based on slopes in figure 3 of
-    // FSR datasheet:
     float force;
-    float fsrG = 1.0 / fsrR; // Calculate conductance
-    // Break parabolic curve down into two linear slopes:
-    if (fsrR <= 600) 
-      force = (fsrG - 0.00075) / 0.00000032639;
-    else
-      force =  fsrG / 0.000000642857;
-
-    return force;
-  }
-  else
-  {
-    return 0;
-    // No pressure detected
-  }
-}
-
-float calcPressure(int fsrADC) {
-//  int fsrADC = analogRead(pin);
-  // If the FSR has no pressure, the resistance will be
-  // near infinite. So the voltage should be near 0.
-  if (fsrADC != 0) // If the analog reading is non-zero
-  {
-    // Use ADC reading to calculate voltage:
-    float fsrV = fsrADC * VCC / 1023.0;
-    // Use voltage and static resistor value to 
-    // calculate FSR resistance:
-    float fsrR = R_DIV * (VCC / fsrV - 1.0);
-    // Guesstimate force based on slopes in figure 3 of
-    // FSR datasheet:
-    float force;
-    float fsrG = 1.0 / fsrR; // Calculate conductance
-    // Break parabolic curve down into two linear slopes:
+    float fsrG = 1.0 / fsrR; 
+   
     if (fsrR <= 600) 
       force = (fsrG - 0.00075) / 0.00000032639;
     else
